@@ -6,11 +6,20 @@
 //  Copyright © 2019 김영석. All rights reserved.
 //
 
+/*
+ pod 'Firebase/Auth'
+ pod 'GoogleSignIn'
+ pod 'Firebase/Core'
+ pod 'Firebase/Analytics'
+ pod 'Firebase/Database'
+ */
+
 import UIKit
 import Firebase
 import GoogleSignIn
 import GooglePlaces
 import GoogleMaps
+
 
 
 let googleApiKey = "AIzaSyC4SrBmcYPkFcQKMq3DhUJF0WB3hY9D8p4"

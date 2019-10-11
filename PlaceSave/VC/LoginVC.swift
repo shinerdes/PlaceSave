@@ -103,13 +103,16 @@ class LoginVC: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate  {
                     // DB에 계정 생성. AUTH에 이미 계정은 들어간 상태니깐
                     
                     print("Successfully registered user!")
-                    self.performSegue(withIdentifier: "showMapVC", sender: nil)
-                    
+                    //self.performSegue(withIdentifier: "showMapVC", sender: nil)
+                   self.dismiss(animated: true, completion: nil)
+
                     
                 } else {
                     // 이미 생성되어있으면 그냥 이동만
-                    self.performSegue(withIdentifier: "showMapVC", sender: nil)
-                    
+                    //self.performSegue(withIdentifier: "showMapVC", sender: nil)
+                    self.dismiss(animated: true, completion: nil)
+
+
                     
                 }
                 

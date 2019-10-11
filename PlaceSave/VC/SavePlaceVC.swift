@@ -22,6 +22,7 @@ class SavePlaceVC: UIViewController {
         tableView.dataSource = self
         
 
+        
         // Do any additional setup after loading the view.
     }
     
@@ -91,5 +92,8 @@ extension SavePlaceVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-
+        // delete를 뽑아내는 과정
+        // row edit로 밀어낼시 삭제로 간다
+        // 저장된 place의 uid를 추적해서 uid를 날리는 쪽으로
+        //
 }

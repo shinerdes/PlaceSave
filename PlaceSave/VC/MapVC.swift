@@ -49,6 +49,11 @@ class MapVC: UIViewController {
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         mapView.delegate = self
+        mapView.isMyLocationEnabled = true
+        mapView.settings.myLocationButton = true
+        mapView.padding = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 50)
+
+        
         // Do any additional setup after loading the view.
         
         

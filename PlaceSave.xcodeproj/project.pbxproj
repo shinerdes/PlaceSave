@@ -126,8 +126,8 @@
 			children = (
 				19D3CB0F22D73CD6004048AA /* Users.swift */,
 				19D3CB1222DB1561004048AA /* GoogleDataProvider.swift */,
-				19D3CB1722DB547C004048AA /* GooglePlace.swift */,
 				19D3CB1922DB5810004048AA /* PlaceMarker.swift */,
+				19D3CB1722DB547C004048AA /* GooglePlace.swift */,
 				19B164E422E6CE96008892C2 /* Points.swift */,
 			);
 			path = Model;
