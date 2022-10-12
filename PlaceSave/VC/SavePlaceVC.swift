@@ -1,10 +1,3 @@
-//
-//  SavePlaceVC.swift
-//  PlaceSave
-//
-//  Created by 김영석 on 20/07/2019.
-//  Copyright © 2019 김영석. All rights reserved.
-//
 
 import UIKit
 import Firebase
@@ -51,6 +44,8 @@ class SavePlaceVC: UIViewController {
     
     // 데이터를 불러와야하는 과정
  
+    
+    
 
 }
 

@@ -8,7 +8,6 @@ target 'PlaceSave' do
   # Pods for PlaceSave
   pod 'Firebase/Core'
   pod 'SwiftyJSON'
-  pod 'EzPopup'
   pod 'Firebase/Storage'
   pod 'Firebase/Auth'
   pod 'GoogleSignIn'

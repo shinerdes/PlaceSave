@@ -1,10 +1,4 @@
-//
-//  UIViewExtension.swift
-//  PlaceSave
-//
-//  Created by 김영석 on 14/07/2019.
-//  Copyright © 2019 김영석. All rights reserved.
-//
+
 
 import UIKit
 

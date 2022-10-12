@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -30,6 +30,9 @@
 		19ED995C22E30ECE0057578C /* SavePlaceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19ED995B22E30ECE0057578C /* SavePlaceVC.swift */; };
 		19ED995E22E324840057578C /* SavePlaceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19ED995D22E324840057578C /* SavePlaceCell.swift */; };
 		5F5733A71BB7CD4C15E1B55A /* Pods_PlaceSave.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 982385B0E906DE6D9A946B64 /* Pods_PlaceSave.framework */; };
+		C42FD75528EC1CBD00B2626D /* PopOverVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42FD75428EC1CBD00B2626D /* PopOverVC.swift */; };
+		C42FD75728ED8F2A00B2626D /* StoreTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42FD75628ED8F2A00B2626D /* StoreTypeCell.swift */; };
+		C42FD75928EDA86700B2626D /* StoreTypeTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42FD75828EDA86700B2626D /* StoreTypeTableVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +64,9 @@
 		19ED995D22E324840057578C /* SavePlaceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavePlaceCell.swift; sourceTree = "<group>"; };
 		8F0259C8EA640349C012B047 /* Pods-PlaceSave.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlaceSave.release.xcconfig"; path = "Pods/Target Support Files/Pods-PlaceSave/Pods-PlaceSave.release.xcconfig"; sourceTree = "<group>"; };
 		982385B0E906DE6D9A946B64 /* Pods_PlaceSave.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PlaceSave.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C42FD75428EC1CBD00B2626D /* PopOverVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopOverVC.swift; sourceTree = "<group>"; };
+		C42FD75628ED8F2A00B2626D /* StoreTypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreTypeCell.swift; sourceTree = "<group>"; };
+		C42FD75828EDA86700B2626D /* StoreTypeTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreTypeTableVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +147,8 @@
 				19ED995522E1AAAD0057578C /* TypeChangeVC.swift */,
 				1936D06F22E46AA4000CD88D /* MenuPopVC.swift */,
 				19ED995B22E30ECE0057578C /* SavePlaceVC.swift */,
+				C42FD75428EC1CBD00B2626D /* PopOverVC.swift */,
+				C42FD75828EDA86700B2626D /* StoreTypeTableVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -152,6 +160,7 @@
 				19D3CB1B22DB60BC004048AA /* MarkerInfoView.swift */,
 				19D3CB1D22DB6104004048AA /* MarkerInfoView.xib */,
 				19ED995D22E324840057578C /* SavePlaceCell.swift */,
+				C42FD75628ED8F2A00B2626D /* StoreTypeCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -250,31 +259,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-PlaceSave/Pods-PlaceSave-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/EzPopup/EzPopup.framework",
-				"${BUILT_PRODUCTS_DIR}/GTMOAuth2/GTMOAuth2.framework",
-				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
-				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PlaceSave/Pods-PlaceSave-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EzPopup.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMOAuth2.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PlaceSave/Pods-PlaceSave-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PlaceSave/Pods-PlaceSave-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PlaceSave/Pods-PlaceSave-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C99623967393CA5690CA41A5 /* [CP] Check Pods Manifest.lock */ = {
@@ -300,21 +294,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-PlaceSave/Pods-PlaceSave-resources.sh",
-				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
-				"${PODS_ROOT}/GooglePlaces/Frameworks/GooglePlaces.framework/Resources/GooglePlaces.bundle",
-				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PlaceSave/Pods-PlaceSave-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GooglePlaces.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PlaceSave/Pods-PlaceSave-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PlaceSave/Pods-PlaceSave-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PlaceSave/Pods-PlaceSave-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -330,6 +319,7 @@
 				19D3CB1822DB547C004048AA /* GooglePlace.swift in Sources */,
 				1936D07022E46AA4000CD88D /* MenuPopVC.swift in Sources */,
 				19D3CB1622DB49FC004048AA /* UIViewExtension.swift in Sources */,
+				C42FD75528EC1CBD00B2626D /* PopOverVC.swift in Sources */,
 				19B164E522E6CE96008892C2 /* Points.swift in Sources */,
 				197B8F8B22C0CE8500125B7E /* ViewController.swift in Sources */,
 				1906D78F22D33D410057E035 /* DataService.swift in Sources */,
@@ -337,8 +327,10 @@
 				197B8F8922C0CE8500125B7E /* AppDelegate.swift in Sources */,
 				19D3CB1A22DB5810004048AA /* PlaceMarker.swift in Sources */,
 				1906D79522D4AEB70057E035 /* MapVC.swift in Sources */,
+				C42FD75728ED8F2A00B2626D /* StoreTypeCell.swift in Sources */,
 				197B8F9E22C62CB300125B7E /* LoginVC.swift in Sources */,
 				19ED995C22E30ECE0057578C /* SavePlaceVC.swift in Sources */,
+				C42FD75928EDA86700B2626D /* StoreTypeTableVC.swift in Sources */,
 				19ED995E22E324840057578C /* SavePlaceCell.swift in Sources */,
 				1906D79122D33D6F0057E035 /* AuthService.swift in Sources */,
 			);

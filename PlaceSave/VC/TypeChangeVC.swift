@@ -1,10 +1,4 @@
-//
-//  TypeChangeVC.swift
-//  PlaceSave
-//
-//  Created by 김영석 on 19/07/2019.
-//  Copyright © 2019 김영석. All rights reserved.
-//
+
 
 import UIKit
 
@@ -48,7 +42,7 @@ extension TypeChangeVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
+        print("선택함")
         delegate?.typeChangeVC(sender: self, didSelectNumber: indexPath.row)
     }
 }

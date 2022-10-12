@@ -1,10 +1,3 @@
-//
-//  LoginVC.swift
-//  PlaceSave
-//
-//  Created by 김영석 on 28/06/2019.
-//  Copyright © 2019 김영석. All rights reserved.
-//
 
 import UIKit
 import Firebase
@@ -110,8 +103,10 @@ class LoginVC: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate  {
                 } else {
                     // 이미 생성되어있으면 그냥 이동만
                     //self.performSegue(withIdentifier: "showMapVC", sender: nil)
+                    print("기존 로그인")
                     self.dismiss(animated: true, completion: nil)
 
+                
 
                     
                 }

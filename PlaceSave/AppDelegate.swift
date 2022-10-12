@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  PlaceSave
-//
-//  Created by 김영석 on 24/06/2019.
-//  Copyright © 2019 김영석. All rights reserved.
-//
 
 /*
  pod 'Firebase/Auth'

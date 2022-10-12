@@ -1,17 +1,17 @@
-//
-//  MapVC.swift
-//  PlaceSave
-//
-//  Created by 김영석 on 09/07/2019.
-//  Copyright © 2019 김영석. All rights reserved.
-//
 
 import UIKit
 import GoogleSignIn
 import Firebase
 import GoogleMaps
-import EzPopup
 
+
+// storyborad autolayout 조정
+// google maps const 조정
+// store popup 다시 나오게
+// saved table ui 변경
+
+var searchedTypes = [""]
+var imageSet = ""
 
 class MapVC: UIViewController {
     
@@ -32,28 +32,39 @@ class MapVC: UIViewController {
     @IBOutlet private weak var mapCenterPinImage: UIImageView!
     @IBOutlet private weak var pinImageVerticalConstraint: NSLayoutConstraint!
     @IBOutlet weak var mapView: GMSMapView!
-    private var searchedTypes = ["bakery"] // 카테고리
+    
+    
+
+    
+    
+    //var searchedTypes = [""] // 카테고리
     //private var searchedTypes = ["bakery", "bar", "cafe", "grocery_or_supermarket", "restaurant"] // 임시용
     private let locationManager = CLLocationManager()
     private let dataProvider = GoogleDataProvider()
     private let searchRadius: Double = 1250
     
-    var imageSet = "bakery" // google에서 불러오는 사진이 없으면 기본 셋팅해주는 이미지. 카테고리에 따라 바뀜.
+    // google에서 불러오는 사진이 없으면 기본 셋팅해주는 이미지. 카테고리에 따라 바뀜.
     
     let pickerVC = TypeChangeVC.instantiate()
     let menuVC = MenuPopVC.instantiate()
+    
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+        
         mapView.delegate = self
         mapView.isMyLocationEnabled = true
         mapView.settings.myLocationButton = true
         mapView.padding = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 50)
 
-        
+        print("뷰디드로드")
+        searchedTypes[0] = "bakery"
+        imageSet = "bakery"
+
         // Do any additional setup after loading the view.
         
         
@@ -61,25 +72,49 @@ class MapVC: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationItem.title = (Auth.auth().currentUser?.email)!
+        print("searchedTypes")
+        print(searchedTypes[0])
+        fetchNearbyPlaces(coordinate: mapView.camera.target)
+//        self.navigationItem.title = (Auth.auth().currentUser?.email)!
     }
     
     
     
-    @IBAction func menuBtnWasPressed(_ sender: Any) {
-        guard let menuVC = menuVC else { return }
-        menuVC.delegate = self
+    @IBAction func menuBtnWasPressed(_ sender: Any) { // 메뉴버튼
+//        guard let menuVC = menuVC else { return }
+//        menuVC.delegate = self
+//
+//        let popupVC = PopupViewController(contentController: menuVC, position: .topRight(CGPoint(x: 16, y: 36)), popupWidth: 150, popupHeight: 135)
+//        popupVC.canTapOutsideToDismiss = true
+//        popupVC.cornerRadius = 5
+//        present(popupVC, animated: true, completion: nil)
+//
+        // 날리고 바로 tableview
         
-        let popupVC = PopupViewController(contentController: menuVC, position: .topRight(CGPoint(x: 16, y: 36)), popupWidth: 150, popupHeight: 135)
-        popupVC.canTapOutsideToDismiss = true
-        popupVC.cornerRadius = 5
-        present(popupVC, animated: true, completion: nil)
         
+        /*
+         let VC1 = self.storyboard!.instantiateViewControllerWithIdentifier("MyViewController") as! ViewController
+         let navController = UINavigationController(rootViewController: VC1) // Creating a navigation controller with VC1 at the root of the navigation stack.
+         self.present(navController, animated:true, completion: nil)
+
+         */
+        
+       // let naviVC =  self.storyboard?.instantiateViewController(withIdentifier: "naviStoreType") as? UINavigationController
+        let storeTypeVC = self.storyboard?.instantiateViewController(withIdentifier: "storetype") as? StoreTypeTableVC
+        
+        print(searchedTypes[0])
+        storeTypeVC?.selectedStore = searchedTypes[0]
+    
+        storeTypeVC?.modalPresentationStyle = .pageSheet
+        self.navigationController!.pushViewController(storeTypeVC!, animated: true)
+
+
+
     }
     
     
     
-    @IBAction func touchlogout(_ sender: UIButton) {
+    @IBAction func touchlogout(_ sender: Any) { // 로그아웃
         
         
         let logoutPopup = UIAlertController(title: "Logout?", message: "Are you sure you want to logout?", preferredStyle: .alert)
@@ -122,12 +157,14 @@ class MapVC: UIViewController {
     func fetchNearbyPlaces(coordinate: CLLocationCoordinate2D) {
         mapView.clear() // 새로고침
         
-        dataProvider.fetchPlacesNearCoordinate(coordinate, radius:searchRadius, types: searchedTypes) { places in
+        dataProvider.fetchPlacesNearCoordinate(near: coordinate, radius:searchRadius, types: searchedTypes) { places in
             places.forEach {
                 let marker = PlaceMarker(place: $0)
                 marker.map = self.mapView
             }
         }
+        
+        
     }
     
     private func reverseGeocodeCoordinate(_ coordinate: CLLocationCoordinate2D) {
@@ -160,18 +197,8 @@ class MapVC: UIViewController {
     
     
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
     
-    
-    func rotateImage(image: UIImage) -> UIImage { // 파일 회전 // PNG파일로 저장시 화면서 회전되어서 저장되는데 그것을 잡아주는 과정 
+    func rotateImage(image: UIImage) -> UIImage { // 파일 회전 // PNG파일로 저  장시 화면서 회전되어서 저장되는데 그것을 잡아주는 과정
         
         if (image.imageOrientation == UIImage.Orientation.up ) {
             return image
@@ -187,6 +214,20 @@ class MapVC: UIViewController {
         return copy!
     }
 }
+
+
+
+
+
+extension MapVC: StoreTypeTableVCDelegate {
+    func typeDone(_ controller: StoreTypeTableVC, didSelectTypes types: String) {
+        searchedTypes[0] = controller.selectedStore
+        //dismiss(animated: true)
+        fetchNearbyPlaces(coordinate: mapView.camera.target)
+
+    }
+}
+
 
 
 extension MapVC: CLLocationManagerDelegate {
@@ -239,58 +280,95 @@ extension MapVC: GMSMapViewDelegate {
     }
     
     
+//
+//    func mapView(_ mapView: GMSMapView, didTapAt marker: GMSMarker) { // 짧은 텝
+//
+//        guard let placeMarker = marker as? PlaceMarker else {
+//            return
+//        }
+//
+//
+//    }
+
+
+    // marker Info Contents 제거
     
-    func mapView(_ mapView: GMSMapView, didTapAt marker: GMSMarker) { // 짧은 텝
-        
-        guard let placeMarker = marker as? PlaceMarker else {
-            return
-        }
-        
-        
-    }
-    
-    
-    
-    func mapView(_ mapView: GMSMapView, markerInfoContents marker: GMSMarker) -> UIView? {
-        
-        guard let placeMarker = marker as? PlaceMarker else {
-            return nil
-        }
-        guard let infoView = UIView.viewFromNibName("MarkerInfoView") as? MarkerInfoView else {
-            return nil
-        }
-        
-        
-        saveOffset = 1 // marker가 생겼으니깐
-        infoView.nameLabel.text = placeMarker.place.name
-        if let photo = placeMarker.place.photo {
-            infoView.placePhoto.image = photo // 마커에 이미지
-            saveimage = photo // 임시 이미지
-            
-        } else {
-            infoView.placePhoto.image = UIImage(named: imageSet) // 이미지 없으면 마커에 기본 카테고리 이미지
-            saveimage = UIImage(named: imageSet)! // 임시 이미지
-            
-        }
-        
-        // viewload시 offset 1, view가 disappear되면 0
-        
-        
-        print(placeMarker.place.name)
-        imsiStoreName = placeMarker.place.name // 임시 저장하는 가게 이름에 marker pop시 저장
-        
-        print(imsiAddress) //이게 그러면 markerinfocontents가 먼저 들어간다는 소리
-        
-        // 만약에 버튼을 누르면 여기서 주소, 좌표랑 해서 정보를 보내줘야 함
-        // view가 appear 하냐 아니냐가 판단 기준
-        // move -> marker
-        
-        return infoView
-        
-    }
+//    func mapView(_ mapView: GMSMapView, markerInfoContents marker: GMSMarker) -> UIView? {
+//
+//        print("굿굿")
+//        guard let placeMarker = marker as? PlaceMarker else {
+//            return nil
+//        }
+//        guard let infoView = UIView.viewFromNibName("MarkerInfoView") as? MarkerInfoView else {
+//            return nil
+//        }
+//
+//
+//        saveOffset = 1 // marker가 생겼으니깐
+//        infoView.nameLabel.text = placeMarker.place.name
+//        if let photo = placeMarker.place.photo {
+//            infoView.placePhoto.image = photo // 마커에 이미지
+//            saveimage = photo // 임시 이미지
+//
+//        } else {
+//            infoView.placePhoto.image = UIImage(named: imageSet) // 이미지 없으면 마커에 기본 카테고리 이미지
+//            saveimage = UIImage(named: imageSet)! // 임시 이미지
+//
+//        }
+//
+//        // viewload시 offset 1, view가 disappear되면 0
+//
+//
+//        //print(placeMarker.place.name)
+//        imsiStoreName = placeMarker.place.name // 임시 저장하는 가게 이름에 marker pop시 저장
+//
+//        print(imsiAddress) //이게 그러면 markerinfocontents가 먼저 들어간다는 소리
+//
+//        // 만약에 버튼을 누르면 여기서 주소, 좌표랑 해서 정보를 보내줘야 함
+//        // view가 appear 하냐 아니냐가 판단 기준
+//        // move -> marker
+//
+//        return infoView
+//
+//    }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         mapCenterPinImage.fadeOut(0.25)
+        
+        guard let placeMarker = marker as? PlaceMarker else {
+            return false
+        }
+        
+        print("가게 이름")
+        print(placeMarker.place.name)
+        
+        let popoverVC = self.storyboard?.instantiateViewController(withIdentifier: "popover") as? PopOverVC
+        popoverVC?.modalPresentationStyle = .popover
+        popoverVC?.popOverStoreTitle = placeMarker.place.name
+        popoverVC?.popoverLatitude = imsiLatitude
+        popoverVC?.popoverLongitude = imsiLongitude
+        popoverVC?.popOverAddress = imsiAddress
+        
+        if let photo = placeMarker.place.photo {
+            popoverVC?.popOverStoreImage = photo
+//            infoView.placePhoto.image = photo // 마커에 이미지
+            saveimage = photo // 임시 이미지
+            popoverVC?.popOverSaveImage = photo
+        
+            
+        } else {
+            popoverVC?.popOverStoreImage = UIImage(named: imageSet)!
+//            infoView.placePhoto.image = UIImage(named: imageSet) // 이미지 없으면 마커에 기본 카테고리 이미지
+            saveimage = UIImage(named: imageSet)! // 임시 이미지
+            popoverVC?.popOverSaveImage = UIImage(named: imageSet)!
+            
+            
+        }
+        
+        
+        self.present(popoverVC!, animated: true, completion: nil)
+        
+        print("어우없")
         return false
     }
     
@@ -299,228 +377,256 @@ extension MapVC: GMSMapViewDelegate {
         mapView.selectedMarker = nil
         return false
     }
-}
-
-
-extension MapVC: TypeChangeDelegate {
-    func typeChangeVC(sender: TypeChangeVC, didSelectNumber number: Int) {
-        dismiss(animated: true) {
-            //["bakery", "bar", "cafe", "grocery_or_supermarket", "restaurant"]
-            // number 기준
-            switch number
-            { // 카테고리가 바뀔시 : 서치되는 카테고리 변경. 기본 셋팅 되는 이미지 파일도 변경
-            case 0:
-                self.mapView.clear()
-                print("0")
-                self.searchedTypes[0] = "bakery"
-                self.fetchNearbyPlaces(coordinate: self.mapView.camera.target)
-                self.imageSet = "bakery"
-            case 1:
-                self.mapView.clear()
-                print("1")
-                self.searchedTypes[0] = "bar"
-                self.fetchNearbyPlaces(coordinate: self.mapView.camera.target)
-                self.imageSet = "bar"
-            case 2:
-                self.mapView.clear()
-                print("2")
-                self.searchedTypes[0] = "cafe"
-                self.fetchNearbyPlaces(coordinate: self.mapView.camera.target)
-                self.imageSet = "cafe"
-            case 3:
-                self.mapView.clear()
-                print("3")
-                self.searchedTypes[0] = "grocery_or_supermarket"
-                self.fetchNearbyPlaces(coordinate: self.mapView.camera.target)
-                self.imageSet = "grocery_or_supermarket"
-            case 4:
-                self.mapView.clear()
-                print("4")
-                self.searchedTypes[0] = "restaurant"
-                self.fetchNearbyPlaces(coordinate: self.mapView.camera.target)
-                self.imageSet = "restaurant"
-            default:
-                print("error!")
-            }
-            
-            
-        }
-    }
-}
-
-extension MapVC: MenuPopDelegate {
-    func menuPopVC(sender: MenuPopVC, didSelectNumber number: Int) {
-        dismiss(animated: true) {
-            switch number {
-            case 0:
-                
-                guard let pickerVC = self.pickerVC else { return }
-                
-                pickerVC.delegate = self
-                
-                let popupVC = PopupViewController(contentController: pickerVC, position: .topRight(CGPoint(x: 16, y: 36)), popupWidth: 150, popupHeight: 220)
-                popupVC.canTapOutsideToDismiss = true
-                popupVC.cornerRadius = 5
-                self.present(popupVC, animated: true, completion: nil) // 끝남
-                
-                
-            case 1:
-                print("이거는 저장테이블 이동")
-                self.performSegue(withIdentifier: "showSaveDataTable", sender: nil)
-                
-            case 2:
-                if self.saveOffset == 1 { // offset 1 .marker가 있는 상태에서 버튼을 눌렀을 경우. 데이터를 저장하기 위한 과정을 시작한다
-                    var redundancyCheck = 0 //database 중복 검사
-                    let uid = (Auth.auth().currentUser?.uid)!
-                    let email = (Auth.auth().currentUser?.email)!
-                    
-                    print("시작점")
-                    DataService.instance.getAllPoints { (returnPoint) in
-                        for i in returnPoint {
-                            if i.email == (Auth.auth().currentUser?.email)! && i.latitue == self.imsiLatitude && i.longitude == self.imsiLongitude
-                            {
-                                
-                                self.redundancyCheckArray.append(i)
-                                // place저장시 같은 계정 + 위도, 경도가 다 같으면 중복 된다는 판정을 내려서 중복성 체크 array에 집어 넣음
-                            }
-                        }
-                        
-                        
-                        redundancyCheck = self.redundancyCheckArray.count // 중복성 카운터
-                        print("중복성 체크 \(redundancyCheck)")
-                        // 현재 가지고 있는 위도 경도
-                        // 계정 x 위도 x 경도
-                        
-                        
-                        if redundancyCheck == 0 { //중복되는 곳이 없다
-                            
-                            var willSaveImage = self.saveimage
-                            willSaveImage = self.rotateImage(image: willSaveImage!) // 90도 돌림
-                            if let data = willSaveImage!.pngData() // 데이터는 존재한다.
-                                
-                            {
-                                
-                                
-                                print("아니 왜 안되냐야야야야야111")
-                                
-                                let storageRef = Storage.storage(url: "gs://placesave-1f910.appspot.com/").reference()
-                                
-                                // 주소로 image name 저장
-                                let placeImageRef = storageRef.child("images/\(email)_\(self.imsiLatitude)_\(self.imsiLongitude).png")
-                                // email - 위도 - 경도
-                                
-                                
-                                
-                                let uploadTask = placeImageRef.putData(data, metadata: nil) { (metadata, error) in
-                                    // storage에 저장되는 putData는 제일 마지막 순서
-                                    
-                                    guard let metadata = metadata else {
-                                        // Uh-oh, an error occurred!
-                                        return
-                                    }
-                                    
-                                    print(metadata)
-                                    // Metadata contains file metadata such as size, content-type.
-                                    let size = metadata.size
-                                    // You can also access to download URL after upload.
-                                    placeImageRef.downloadURL { (url, error) in
-                                        guard let downloadURL = url else {
-                                            // Uh-oh, an error occurred!
-                                            return
-                                        }
-                                    }
-                                    let savedAlert = UIAlertController(title: "Success!", message: "This plce has been saved", preferredStyle: .alert)
-                                    let okCancel = UIAlertAction(title: "확인", style: .default) { (buttonTapped) in
-                                        do {
-                                            
-                                        } catch {
-                                            
-                                        }
-                                        
-                                        
-                                    }
-                                    
-                                    savedAlert.addAction(okCancel)
-                                    self.present(savedAlert, animated: true, completion: nil)
-                                    // 확인 알람
-                                    // 여기까지가 이미지를 storage에 올리는 과정
-                                }
-                                
-                                
-                                
-                                
-                                print("아니 왜 안되냐야야야야야444")
-                                
-                            }
-                            
-                            
-                            
-                            
-                            
-                            // 사진을 일단 저장함 -> 그 사진에 대한 string을 불러옴 -> string을 uploadpost에 저장
-                            
-                            
-                            DataService.instance.uploadPost(forUID: uid, forEmail: email, forAddress: self.imsiAddress, forLatitude: self.imsiLatitude, forLongitude: self.imsiLongitude, forStoreName: self.imsiStoreName, forImage: "images/\(email)_\(self.imsiLatitude)_\(self.imsiLongitude).png", sendComplete: { (isComplete) in
-                                if isComplete == true {
-                                    print("저장 완료")
-                                }
-                                
-                            })
-                            // uid
-                            // account (어짜피 gmail.com 이라서 따로 uid를 팔 필요는 없다)
-                            // 주소
-                            // 위도
-                            // 경도
-                            // 가게 이름
-                            // 이미지
-                            
-                            
-                        } else { // 중복되는곳이 있다. redundancy
-                            let redundancyAlert = UIAlertController(title: "ERROR", message: "There are overlaaping places in the database", preferredStyle: .alert)
-                            let okCancel = UIAlertAction(title: "확인", style: .default) { (buttonTapped) in
-                                do {
-                                    
-                                } catch {
-                                    
-                                }
-                                
-                                
-                            }
-                            
-                            redundancyAlert.addAction(okCancel)
-                            self.present(redundancyAlert, animated: true, completion: nil)
-                            
-                            // 데이터 추가가 아닌 에러 alert로 대체
-                        }
-                        
-                        
-                        
-                    }
-                } else { // marker가 없는 offset 0의 상태면 데이터 저장을 하지 않는다.
-                    let noPlaceAlert = UIAlertController(title: "ERROR", message: "The place didn't show up.", preferredStyle: .alert)
-                    let okCancel = UIAlertAction(title: "확인", style: .default) { (buttonTapped) in
-                        do {
-                            
-                        } catch {
-                            
-                        }
-                        
-                        
-                    }
-                    noPlaceAlert.addAction(okCancel)
-                    self.present(noPlaceAlert, animated: true, completion: nil)
-                    print("경고 알림으로 대신")
-                    
-                }
-                
-                
-            default:
-                print("error")
-            }
-        }
-    }
     
-    
+ 
 }
 
+// 구 expop 메뉴
 
+//
+//extension MapVC: TypeChangeDelegate {
+//    func typeChangeVC(sender: TypeChangeVC, didSelectNumber number: Int) {
+//        dismiss(animated: true) {
+//            //["bakery", "bar", "cafe", "grocery_or_supermarket", "restaurant"]
+//            // number 기준
+//            switch number
+//            { // 카테고리가 바뀔시 : 서치되는 카테고리 변경. 기본 셋팅 되는 이미지 파일도 변경
+//            case 0:
+//                self.mapView.clear()
+//                print("0")
+//                searchedTypes[0] = "bakery"
+//                self.fetchNearbyPlaces(coordinate: self.mapView.camera.target)
+//                imageSet = "bakery"
+//            case 1:
+//                self.mapView.clear()
+//                print("1")
+//                searchedTypes[0] = "bar"
+//                self.fetchNearbyPlaces(coordinate: self.mapView.camera.target)
+//                imageSet = "bar"
+//            case 2:
+//                self.mapView.clear()
+//                print("2")
+//                searchedTypes[0] = "cafe"
+//                self.fetchNearbyPlaces(coordinate: self.mapView.camera.target)
+//                imageSet = "cafe"
+//            case 3:
+//                self.mapView.clear()
+//                print("3")
+//                searchedTypes[0] = "grocery_or_supermarket"
+//                self.fetchNearbyPlaces(coordinate: self.mapView.camera.target)
+//                imageSet = "grocery_or_supermarket"
+//            case 4:
+//                self.mapView.clear()
+//                print("4")
+//                searchedTypes[0] = "restaurant"
+//                self.fetchNearbyPlaces(coordinate: self.mapView.camera.target)
+//                imageSet = "restaurant"
+//            default:
+//                print("error!")
+//            }
+//
+//
+//        }
+//    }
+//}
+
+
+
+//extension MapVC: MenuPopDelegate {
+//    func menuPopVC(sender: MenuPopVC, didSelectNumber number: Int) {
+//        dismiss(animated: true) {
+//            switch number {
+//            case 0:
+//                print("1번")
+//                guard let pickerVC = self.pickerVC else { return }
+//
+//                pickerVC.delegate = self
+//
+//                let popupVC = PopupViewController(contentController: pickerVC, position: .topRight(CGPoint(x: 16, y: 36)), popupWidth: 150, popupHeight: 220)
+//                popupVC.canTapOutsideToDismiss = true
+//                popupVC.cornerRadius = 5
+//                self.present(popupVC, animated: true, completion: nil) // 끝남
+//
+//
+//
+//            case 1:
+//                print("2번")
+//                print("이거는 저장테이블 이동")
+////                let storyboard: UIStoryboard = UIStoryboard(name: "SavePlaceVC", bundle: nil)
+////                guard let pvc = self.presentingViewController else { return }
+////                let nextView = storyboard.instantiateViewController(withIdentifier: "SavePlaceVC")
+//                //                nextView.modalPresentationStyle = .overFullScreen
+//                //                nextView.modalTransitionStyle   = .crossDissolve
+//                //
+//                //                pvc.present(nextView, animated: true)
+//
+//
+//                // 뷰 객체 얻어오기 (storyboard ID로 ViewController구분)
+//                if #available(iOS 13.0, *) {
+//                    guard let nextVC = self.storyboard?.instantiateViewController(identifier: "SavePlaceVC") else {return}
+//                    self.present(nextVC, animated: true)
+//                } else {
+//                    // Fallback on earlier versions
+//                }
+//
+//
+//
+//
+//
+//               // self.performSegue(withIdentifier: "showSaveDataTable", sender: nil)
+//
+//            case 2:
+//                print("3번")
+//                if self.saveOffset == 1 { // offset 1 .marker가 있는 상태에서 버튼을 눌렀을 경우. 데이터를 저장하기 위한 과정을 시작한다
+//                    var redundancyCheck = 0 //database 중복 검사
+//                    let uid = (Auth.auth().currentUser?.uid)!
+//                    let email = (Auth.auth().currentUser?.email)!
+//
+//                    print("시작점")
+//                    DataService.instance.getAllPoints { (returnPoint) in
+//                        for i in returnPoint {
+//                            if i.email == (Auth.auth().currentUser?.email)! && i.latitue == self.imsiLatitude && i.longitude == self.imsiLongitude
+//                            {
+//
+//                                self.redundancyCheckArray.append(i)
+//                                // place저장시 같은 계정 + 위도, 경도가 다 같으면 중복 된다는 판정을 내려서 중복성 체크 array에 집어 넣음
+//                            }
+//                        }
+//
+//
+//                        redundancyCheck = self.redundancyCheckArray.count // 중복성 카운터
+//                        print("중복성 체크 \(redundancyCheck)")
+//                        // 현재 가지고 있는 위도 경도
+//                        // 계정 x 위도 x 경도
+//
+//
+//                        if redundancyCheck == 0 { //중복되는 곳이 없다
+//
+//                            var willSaveImage = self.saveimage
+//                            willSaveImage = self.rotateImage(image: willSaveImage!) // 90도 돌림
+//                            if let data = willSaveImage!.pngData() // 데이터는 존재한다.
+//
+//                            {
+//
+//
+//                                print("아니 왜 안되냐야야야야야111")
+//
+//                                let storageRef = Storage.storage(url: "gs://placesave-1f910.appspot.com/").reference()
+//
+//                                // 주소로 image name 저장
+//                                let placeImageRef = storageRef.child("images/\(email)_\(self.imsiLatitude)_\(self.imsiLongitude).png")
+//                                // email - 위도 - 경도
+//
+//
+//
+//                                let uploadTask = placeImageRef.putData(data, metadata: nil) { (metadata, error) in
+//                                    // storage에 저장되는 putData는 제일 마지막 순서
+//
+//                                    guard let metadata = metadata else {
+//                                        // Uh-oh, an error occurred!
+//                                        return
+//                                    }
+//
+//                                    print(metadata)
+//                                    // Metadata contains file metadata such as size, content-type.
+//                                    let size = metadata.size
+//                                    // You can also access to download URL after upload.
+//                                    placeImageRef.downloadURL { (url, error) in
+//                                        guard let downloadURL = url else {
+//                                            // Uh-oh, an error occurred!
+//                                            return
+//                                        }
+//                                    }
+//                                    let savedAlert = UIAlertController(title: "Success!", message: "This plce has been saved", preferredStyle: .alert)
+//                                    let okCancel = UIAlertAction(title: "확인", style: .default) { (buttonTapped) in
+//                                        do {
+//
+//                                        } catch {
+//
+//                                        }
+//
+//
+//                                    }
+//
+//                                    savedAlert.addAction(okCancel)
+//                                    self.present(savedAlert, animated: true, completion: nil)
+//                                    // 확인 알람
+//                                    // 여기까지가 이미지를 storage에 올리는 과정
+//                                }
+//
+//
+//
+//
+//                                print("아니 왜 안되냐야야야야야444")
+//
+//                            }
+//
+//
+//
+//
+//
+//                            // 사진을 일단 저장함 -> 그 사진에 대한 string을 불러옴 -> string을 uploadpost에 저장
+//
+//
+//                            DataService.instance.uploadPost(forUID: uid, forEmail: email, forAddress: self.imsiAddress, forLatitude: self.imsiLatitude, forLongitude: self.imsiLongitude, forStoreName: self.imsiStoreName, forImage: "images/\(email)_\(self.imsiLatitude)_\(self.imsiLongitude).png", sendComplete: { (isComplete) in
+//                                if isComplete == true {
+//                                    print("저장 완료")
+//                                }
+//
+//                            })
+//                            // uid
+//                            // account (어짜피 gmail.com 이라서 따로 uid를 팔 필요는 없다)
+//                            // 주소
+//                            // 위도
+//                            // 경도
+//                            // 가게 이름
+//                            // 이미지
+//
+//
+//                        } else { // 중복되는곳이 있다. redundancy //
+//                            let redundancyAlert = UIAlertController(title: "ERROR", message: "There are overlaaping places in the database", preferredStyle: .alert)
+//                            let okCancel = UIAlertAction(title: "확인", style: .default) { (buttonTapped) in
+//                                do {
+//
+//                                } catch {
+//
+//                                }
+//
+//
+//                            }
+//
+//                            redundancyAlert.addAction(okCancel)
+//                            self.present(redundancyAlert, animated: true, completion: nil)
+//
+//                            // 데이터 추가가 아닌 에러 alert로 대체
+//                        }
+//
+//
+//
+//                    }
+//                } else { // marker가 없는 offset 0의 상태면 데이터 저장을 하지 않는다.
+//                    let noPlaceAlert = UIAlertController(title: "ERROR", message: "The place didn't show up.", preferredStyle: .alert)
+//                    let okCancel = UIAlertAction(title: "확인", style: .default) { (buttonTapped) in
+//                        do {
+//
+//                        } catch {
+//
+//                        }
+//
+//
+//                    }
+//                    noPlaceAlert.addAction(okCancel)
+//                    self.present(noPlaceAlert, animated: true, completion: nil)
+//                    print("경고 알림으로 대신")
+//
+//                }
+//
+//
+//            default:
+//                print("error")
+//            }
+//        }
+//    }
+//
+//
+//}

@@ -1,5 +1,4 @@
 PODS:
-  - EzPopup (1.0)
   - Firebase/Auth (5.8.0):
     - Firebase/CoreOnly
     - FirebaseAuth (= 5.0.4)
@@ -111,7 +110,6 @@ PODS:
   - SwiftyJSON (4.1.0)
 
 DEPENDENCIES:
-  - EzPopup
   - Firebase/Auth
   - Firebase/Core
   - Firebase/Database
@@ -123,8 +121,7 @@ DEPENDENCIES:
   - SwiftyJSON
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
-    - EzPopup
+  trunk:
     - Firebase
     - FirebaseAnalytics
     - FirebaseAuth
@@ -146,7 +143,6 @@ SPEC REPOS:
     - SwiftyJSON
 
 SPEC CHECKSUMS:
-  EzPopup: 8ab951717736197e57b8f9973816fa2601cd59c5
   Firebase: 25812f43e7a53b11ae2f0a5f4c6d12faeb1f7cd7
   FirebaseAnalytics: df15839e9c6ca6bd14d2e8ab6b0c672e6c49097e
   FirebaseAuth: 504b198ceb3472dca5c65bb95544ea44cfc9439e
@@ -161,12 +157,12 @@ SPEC CHECKSUMS:
   GoogleSignIn: 591e46382014e591269f862ba6e7bc0fbd793532
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   GoogleUtilities: 6f681e27050c5e130325e89fa0316dfca826f954
-  GTMOAuth2: c77fe325e4acd453837e72d91e3b5f13116857b2
+  GTMOAuth2: e8b6512c896235149df975c41d9a36c868ab7fba
   GTMSessionFetcher: 0c4baf0a73acd0041bf9f71ea018deedab5ea84e
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
 
-PODFILE CHECKSUM: 62f8411d8e44a4561b3a2d850468c7a6364693a2
+PODFILE CHECKSUM: 60fea973987b4565d1257b4c375e489276cc5eda
 
-COCOAPODS: 1.5.2
+COCOAPODS: 1.10.1

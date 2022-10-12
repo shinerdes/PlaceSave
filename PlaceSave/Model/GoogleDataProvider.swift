@@ -1,10 +1,3 @@
-//
-//  GoogleDataProvider.swift
-//  PlaceSave
-//
-//  Created by 김영석 on 14/07/2019.
-//  Copyright © 2019 김영석. All rights reserved.
-//
 
 import UIKit
 import Foundation
@@ -21,10 +14,15 @@ class GoogleDataProvider {
         return URLSession.shared
     }
     
-    func fetchPlacesNearCoordinate(_ coordinate: CLLocationCoordinate2D, radius: Double, types: [String], completion: @escaping PlacesCompletion) -> Void {        var urlString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=\(coordinate.latitude),\(coordinate.longitude)&radius=\(radius)&rankby=prominence&sensor=true&key=\(googleApiKey)"
+    func fetchPlacesNearCoordinate(near coordinate: CLLocationCoordinate2D, radius: Double, types: [String], completion: @escaping PlacesCompletion) -> Void {
+        var urlString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=\(coordinate.latitude),\(coordinate.longitude)&radius=\(radius)&rankby=prominence&sensor=true&key=\(googleApiKey)"
+        
+
+//        var urlString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=\(coordinate)&radius=\(radius)&rankby=prominence&sensor=true&key=\(googleApiKey)"
         let typesString = types.count > 0 ? types.joined(separator: "|") : "food"
         urlString += "&types=\(typesString)"
         urlString = urlString.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) ?? urlString
+        print(urlString)
         
         guard let url = URL(string: urlString) else {
             completion([])

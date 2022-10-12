@@ -1,10 +1,4 @@
-//
-//  MenuVC.swift
-//  PlaceSave
-//
-//  Created by 김영석 on 21/07/2019.
-//  Copyright © 2019 김영석. All rights reserved.
-//
+
 import UIKit
 
 protocol MenuPopDelegate: class {
